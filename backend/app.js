@@ -13,7 +13,7 @@ const corsOption = {
 app.use(cors(corsOption));
 
 console.log(process.env.MONDODB_URL);
-const port = process.env.PORT;
+const port = process.env.PORT || 4000;
 // console.log(process.env.MONGODB_URI);
 async function main() {
   await mongoose.connect(process.env.MONGODB_URI, {
@@ -27,30 +27,6 @@ main()
   .then(() => console.log("MongoDB connection successful."))
   .catch(console.log);
 
-  //test for adding superadmin
-    
-// // Create a superadmin
-// const superadmin = new User({
-//   userName: 'user1',
-//   name: 'user1',
-//   phoneNum: '1234567890',
-//   email: 'superadmin@example.com',
-//   password: 'user',
-//   admin: false,
-//   superAdmin: false,
-// });
-
-// // Save superadmin
-// superadmin.save((err, savedSuperadmin) => {
-//   if (err) {
-//     console.error('Error saving superadmin:', err);
-//   } else {
-//     console.log('Superadmin saved successfully:', savedSuperadmin);
-//   }
-
-  // Close the MongoDB connection after saving
-  
-//});
 
 app.use(express.json());
 //seedDB();
