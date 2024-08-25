@@ -14,7 +14,7 @@ import {
 } from "../actions/users";
 
 const processLoginRequest = async (data) => {
-  return fetch("http://localhost:5001/api/users/login", {
+  return fetch("https://lt-management-backend.onrender.com/api/users/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -33,7 +33,7 @@ const processLoginRequest = async (data) => {
 };
 
 const processAddUserRequest = async (data, navigate) => {
-  return fetch("http://localhost:5001/api/users/register", {
+  return fetch("https://lt-management-backend.onrender.com/api/users/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -70,7 +70,7 @@ const processAddUserRequest = async (data, navigate) => {
 };
 
 const processDelUserRequest = async (data, navigate) => {
-  return fetch("http://localhost:5001/api/users/delete", {
+  return fetch("https://lt-management-backend.onrender.com/api/users/delete", {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
