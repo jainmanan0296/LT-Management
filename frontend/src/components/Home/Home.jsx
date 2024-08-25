@@ -46,7 +46,7 @@ const Home = () => {
   const [loader, setLoader] = useState(false);
 
   const getTT = async (date) => {
-    return fetch("http://localhost:5001/api/bookings/", {
+    return fetch("https://lt-management-backend.onrender.com/api/bookings/", {
       headers: {
         "Content-Type": "application/json",
       },
@@ -68,7 +68,7 @@ const Home = () => {
   };
 
   const getLT = async () => {
-    return fetch("http://localhost:5001/api/rooms/", {
+    return fetch("https://lt-management-backend.onrender.com/api/rooms/", {
       headers: {
         "Content-Type": "application/json",
       },
