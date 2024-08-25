@@ -2,7 +2,7 @@ import { takeEvery, call, put } from "redux-saga/effects";
 import { addRoomFailedAction, addRoomSuccessAction, ADD_ROOM } from "../actions/rooms";
 
 const processAddRoomReq = async (data, navigate) => {
-  return fetch('http://localhost:5001/api/rooms/addRoom', {
+  return fetch('https://lt-management-backend.onrender.com/api/rooms/addRoom', {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
