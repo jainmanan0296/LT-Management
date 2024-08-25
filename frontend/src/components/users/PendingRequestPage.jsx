@@ -14,7 +14,7 @@ export default function PendingRequestPage() {
   const loc = useLocation();
 
   const getData = async () => {
-    return fetch("http://localhost:5001/api/bookings/pending", {
+    return fetch("https://lt-management-backend.onrender.com/api/bookings/pending", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
