@@ -16,7 +16,7 @@ import {
 } from "../actions/booking";
 
 const processBookingRequest = async (data, navigate, endPoint) => {
-  return fetch(`http://localhost:5001/api/bookings/${endPoint}`, {
+  return fetch(`https://lt-management-backend.onrender.com/api/bookings/${endPoint}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -50,7 +50,7 @@ const processBookingRequest = async (data, navigate, endPoint) => {
 };
 
 const processBookingApprove = async (data, navigate) => {
-  return fetch(`http://localhost:5001/api/bookings/accept`, {
+  return fetch(`https://lt-management-backend.onrender.com/api/bookings/accept`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -83,7 +83,7 @@ const processBookingApprove = async (data, navigate) => {
 };
 
 const processBookingReject = async (data, navigate) => {
-  return fetch("http://localhost:5001/api/bookings/reject", {
+  return fetch("https://lt-management-backend.onrender.com/api/bookings/reject", {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -116,7 +116,7 @@ const processBookingReject = async (data, navigate) => {
 };
 
 const processBookingUpdate = async (data, navigate) => {
-  return fetch("http://localhost:5001/api/bookings/update", {
+  return fetch("https://lt-management-backend.onrender.com/api/bookings/update", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -149,7 +149,7 @@ const processBookingUpdate = async (data, navigate) => {
 };
 
 const processBookingDelete = async (data, navigate, endPoint) => {
-  return fetch(`http://localhost:5001/api/bookings/${endPoint}`, {
+  return fetch(`https://lt-management-backend.onrender.com/api/bookings/${endPoint}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
