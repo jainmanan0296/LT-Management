@@ -1,11 +1,11 @@
-const express = require("express");
-const roomController = require("../controllers/RoomController");
-const userControllers = require("../controllers/UserController");
+import { Router } from "express";
+import { getRoom, addRoom } from "../controllers/RoomController.js";
+import { isSuper } from "../controllers/UserController.js";
 
-const router = express.Router();
+const router = Router();
 
-router.get("/", roomController.getRoom);
+router.get("/", getRoom);
 
-router.post("/addRoom", userControllers.isSuper, roomController.addRoom);
+router.post("/addRoom", isSuper, addRoom);
 
-module.exports = router;
+export default router;

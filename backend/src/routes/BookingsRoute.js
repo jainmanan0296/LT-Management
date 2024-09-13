@@ -1,27 +1,28 @@
-const express = require("express");
-const bookingController = require("../controllers/BookingController");
-const UserController = require("../controllers/UserController");
+import { Router } from "express";
+import { getTimetable, getPendingSchedules, makeBooking, updateBooking, deleteBooking, approveBooking, rejectBooking, getSchedule } from "../controllers/BookingController.js";
+import { isSuper, isAuthenticated, isSuperAdmin, isOwnerOf } from "../controllers/UserController.js";
 
-const router = express.Router();
+const router = Router();
 
-router.post("/", bookingController.getTimetable);
+router.post("/", getTimetable);
 
-router.get("/pending", UserController.isSuper, bookingController.getPendingSchedules);
+router.get("/pending", isSuper, getPendingSchedules);
 
-router.post("/book", UserController.isAuthenticated, bookingController.makeBooking);
+router.post("/book", isAuthenticated, makeBooking);
 
-router.post("/bookI", UserController.isSuperAdmin, bookingController.makeBooking);
+router.post("/bookI", isSuperAdmin, makeBooking);
 
-router.put("/update", UserController.isSuperAdmin, bookingController.updateBooking);
+router.put("/update", isSuperAdmin, updateBooking);
 
-router.delete("/del", UserController.isSuperAdmin, bookingController.deleteBooking);
+router.delete("/del", isSuperAdmin, deleteBooking);
 
-router.delete("/delU", UserController.isAuthenticated, UserController.isOwnerOf, bookingController.deleteBooking);
+router.delete("/delU", isAuthenticated, isOwnerOf, deleteBooking);
 
-router.post("/accept", UserController.isSuper, bookingController.approveBooking);
+router.post("/accept", isSuper, approveBooking);
 
-router.delete("/reject", UserController.isSuper, bookingController.rejectBooking);
+router.delete("/reject", isSuper, rejectBooking);
 
-router.post("/details", UserController.isAuthenticated, bookingController.getSchedule);
+router.post("/details", isAuthenticated, getSchedule);
 
-module.exports = router;
+export default router;
+ 

@@ -1,34 +1,21 @@
-const express = require("express");
+import express, { json } from "express";
 const app = express();
-const mongoose = require("mongoose");
-const userRouter = require("./src/routes/UserRoutes");
-const roomRouter = require("./src/routes/RoomRoutes");
-const bookingRouter = require("./src/routes/BookingsRoute");
-require("dotenv").config();
-const cors = require("cors");
-const seedDB = require("./seed");
-const corsOption = {
-  origin: ["http://localhost:3000"],
-};
-app.use(cors(corsOption));
+import userRouter from "./src/routes/UserRoutes.js";
+import roomRouter from "./src/routes/RoomRoutes.js";
+import bookingRouter from "./src/routes/BookingsRoute.js";
+import 'dotenv/config'
+import cors from "cors";
+import { connectDB } from "./config/db.js"
+//const seedDB = require("./seed");
+
+app.use(cors());
 
 console.log(process.env.MONDODB_URL);
 const port = process.env.PORT || 4000;
-// console.log(process.env.MONGODB_URI);
-async function main() {
-  await mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-}
 
+connectDB()
 
-main()
-  .then(() => console.log("MongoDB connection successful."))
-  .catch(console.log);
-
-
-app.use(express.json());
+app.use(json());
 //seedDB();
 app.get("/", (req, res) => {
   res.json({ message: "Hello World" });

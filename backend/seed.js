@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const User = require("./src/models/UsersModel");
+const User = require("./src/models/UsersModel").default;
 const Dummy_users = [
     {
         userName: 'admin',

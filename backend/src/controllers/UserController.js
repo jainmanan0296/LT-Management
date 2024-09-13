@@ -1,8 +1,10 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const BookingsModel = require("../models/BookingsModel");
-const UserModel = require("../models/UsersModel");
-const ObjectId = require("mongodb").ObjectId;
+import { genSalt, hash as _hash,compare } from "bcrypt";
+import jwt from 'jsonwebtoken';
+const { sign, verify, TokenExpiredError } = jwt;
+
+import BookingModel from "../models/BookingsModel.js";
+import UserModel from "../models/UsersModel.js";
+import { ObjectId } from "mongodb";
 
 const validateEmail = (email) => {
   const re =
@@ -62,319 +64,317 @@ const checkForErrors = async function (reqBody) {
   return errors;
 };
 
-module.exports = {
-  register: async (req, res) => {
-    const name = req.body.name || "";
-    const userName = req.body.userName || "";
-    const email = req.body.email || "";
-    const password = req.body.password || "";
-    const confirmPassword = req.body.confirmPassword || "";
-    const phoneNum = req.body.phoneNum || "";
-    const reqBody = {
+export async function register(req, res) {
+  const name = req.body.name || "";
+  const userName = req.body.userName || "";
+  const email = req.body.email || "";
+  const password = req.body.password || "";
+  const confirmPassword = req.body.confirmPassword || "";
+  const phoneNum = req.body.phoneNum || "";
+  const reqBody = {
+    name,
+    userName,
+    email,
+    password,
+    confirmPassword,
+    phoneNum,
+  };
+
+  let errors = await checkForErrors(reqBody);
+  if (Object.keys(errors).length > 0) {
+    res.json({ message: "Incorrect Inputs", errors });
+  } else {
+    const newUser = new UserModel({
       name,
       userName,
       email,
-      password,
-      confirmPassword,
       phoneNum,
-    };
+      password,
+      admin: false,
+      superAdmin: false,
+    });
 
-    let errors = await checkForErrors(reqBody);
-    if (Object.keys(errors).length > 0) {
-      res.json({ message: "Incorrect Inputs", errors });
-    } else {
-      const newUser = new UserModel({
-        name,
-        userName,
-        email,
-        phoneNum,
-        password,
-        admin: false,
-        superAdmin: false,
-      });
-
-      bcrypt.genSalt(10, (err, salt) => {
-        if (err) {
-          return err;
-        } else {
-          console.log("H3");
-          bcrypt.hash(password, salt, (err, hash) => {
-            if (err) {
-              return err;
-            } else {
-              newUser.password = hash;
-              newUser
-                .save()
-                
-                .then(() => {
-                  res.json({
-                    
-                    message: `User ${newUser.userName} added successfully.`,
-                  });
-                  console.log("H1");
-                })
-                .catch((err) => {
-                  console.log(err);
-                  console.log("H2");
-                  res.json({ errors: "Something went wrong" });
-                });
-            }
-          });
-        }
-      });
-
-      
-    }
-  },
-  authenticate: async (req, res) => {
-    const userName = req.body.userName || "";
-    const password = req.body.password || "";
-  
-    let errors = {};
-  
-    if (userName === "") {
-      errors = { ...errors, userName: "This is a required field." };
-    }
-    if (password === "") {
-      errors = { ...errors, password: "This is a required field." };
-    }
-  
-    if (Object.keys(errors).length > 0) {
-      res.json({ errors });
-    } else {
-      UserModel.findOne({ userName: userName }, (err, userInfo) => {
-        if (err) {
-          res.json({ errors: "Something went wrong" });
-          return err;
-        }
-        if (userInfo) {
-          if (password === userInfo.password) {
-            const token = jwt.sign(
-              {
-                userId: userInfo._id,
-                name: userInfo.name,
-                admin1: userInfo.userName === "admin1",
-                admin2: userInfo.userName === "admin2",
-                admin3: userInfo.userName === "admin3",
-                superAdmin: userInfo.superAdmin,
-              },
-              process.env.JWT_KEY,
-              { expiresIn: "1h" }
-            );
-            res.json({
-              message: "User signed in successfully.",
-              data: { 
-                token: token,
-                admin1: userInfo.userName === "admin1",
-                admin2: userInfo.userName === "admin2",
-                admin3: userInfo.userName === "admin3",
-                superAdmin: userInfo.superAdmin,
-                userId: userInfo._id,
-              },
-            });
+    genSalt(10, (err, salt) => {
+      if (err) {
+        return err;
+      } else {
+        console.log("H3");
+        _hash(password, salt, (err, hash) => {
+          if (err) {
+            return err;
           } else {
-            res.json({
-              errors: { userName: "", password: "Invalid Password." },
-            });
+            newUser.password = hash;
+            newUser
+              .save()
+
+              .then(() => {
+                res.json({
+                  message: `User ${newUser.userName} added successfully.`,
+                });
+                console.log("H1");
+              })
+              .catch((err) => {
+                console.log(err);
+                console.log("H2");
+                res.json({ errors: "Something went wrong" });
+              });
           }
+        });
+      }
+    });
+
+
+  }
+}
+export async function authenticate(req, res) {
+  const userName = req.body.userName || "";
+  const password = req.body.password || "";
+  
+
+  let errors = {};
+
+  if (userName === "") {
+    errors = { ...errors, userName: "This is a required field." };
+  }
+  if (password === "") {
+    errors = { ...errors, password: "This is a required field." };
+  }
+
+  if (Object.keys(errors).length > 0) {
+    res.json({ errors });
+  } else {
+    UserModel.findOne({ userName: userName }, (err, userInfo) => {
+      if (err) {
+        res.json({ errors: "Something went wrong" });
+        return err;
+      }
+      if (userInfo) {
+        const isMatch =  compare(password, userInfo.password)
+        if (isMatch) {
+          const token = sign(
+            {
+              userId: userInfo._id,
+              name: userInfo.name,
+              admin1: userInfo.userName === "admin1",
+              admin2: userInfo.userName === "admin2",
+              admin3: userInfo.userName === "admin3",
+              superAdmin: userInfo.superAdmin,
+            },
+            process.env.JWT_KEY,
+            { expiresIn: "1h" }
+          );
+          res.json({
+            message: "User signed in successfully.",
+            data: {
+              token: token,
+              admin1: userInfo.userName === "admin1",
+              admin2: userInfo.userName === "admin2",
+              admin3: userInfo.userName === "admin3",
+              superAdmin: userInfo.superAdmin,
+              userId: userInfo._id,
+            },
+          });
+         
         } else {
           res.json({
-            errors: { userName: "Username does not exist.", password: "" },
-          });
-        }
-      });
-    }
-  },
-  
-  // The rest of your code for isAuthenticated remains unchanged.
-  isAuthenticated: async (req, res, next) => {
-    if (!req.headers["authorization"]) {
-      res.status(403).json({ errors: "User not authenticated." });
-    } else {
-      const authHeader = req.headers["authorization"];
-      const authToken = authHeader.split(" ")[1];
-
-      if (authToken) {
-        jwt.verify(authToken, process.env.JWT_KEY, (err, decoded) => {
-          if (err) {
-            if (err.name === jwt.TokenExpiredError.name) {
-              res.status(440).json({ errors: "Session Expired" });
-            } else {
-              res.status(401).json({ errors: "Failed to authenticate." });
-            }
-          } else {
-            req.userId = decoded.userId;
-            next();
-          }
-        });
-      } else {
-        res.status(403).json({ errors: "User not authenticated." });
-      }
-    }
-  },
-
-  isAdmin: async (req, res, next) => {
-    if (!req.headers["authorization"]) {
-      res.status(403).json({ errors: "No token provided." });
-    } else {
-      const authHeader = req.headers["authorization"];
-      const authToken = authHeader.split(" ")[1];
-
-      if (authToken) {
-        jwt.verify(authToken, process.env.JWT_KEY, (err, decoded) => {
-          if (err) {
-            if (err.name === "TokenExpiredError") {
-              res.status(440).json({errors: "Session Expired."});
-            } else {
-              res.status(401).json({ errors: "Failed to authenticate. " });
-            }
-          } else {
-            req.userId = decoded.userId;
-            req.admin1 = decoded.admin1;
-            req.admin2 = decoded.admin2;
-            req.admin3 = decoded.admin3;
-            req.superAdmin = false;
-            if (decoded.admin1 || decoded.admin2 || decoded.admin3) {
-              next();
-            } else {
-              res.status(403).json({ errors: "Not an Admin" });
-            }
-          }
-        });
-      } else {
-        res.status(403).json({ errors: "No token provided." });
-      }
-    }
-  },
-
-  isSuperAdmin: async (req, res, next) => {
-    if (!req.headers["authorization"]) {
-      res.status(403).json({ errors: "No token provided." });
-    } else {
-      const authHeader = req.headers["authorization"];
-      const authToken = authHeader.split(" ")[1];
-
-      if (authToken) {
-        jwt.verify(authToken, process.env.JWT_KEY, (err, decoded) => {
-          if (err) {
-            if (err.name === "TokenExpiredError") {
-              res.status(440).json({errors: "Session Expired."});
-            } else {
-              res.status(401).json({ errors: "Failed to authenticate. " });
-            }
-          } else {
-            req.userId = decoded.userId;
-            req.admin1 = false;
-            req.admin2 = false;
-            req.admin3 = false;
-            req.superAdmin = decoded.superAdmin;
-            if (decoded.superAdmin) {
-              next();
-            } else {
-              res.status(403).json({ errors: "Not a Superadmin." });
-            }
-          }
-        });
-      } else {
-        res.status(403).json({ errors: "No token provided." });
-      }
-    }
-  },
-
-  isSuper: async (req, res, next) => {
-    if (!req.headers["authorization"]) {
-      res.status(403).json({ errors: "No token provided." });
-    } else {
-      const authHeader = req.headers["authorization"];
-      const authToken = authHeader.split(" ")[1];
-
-      if (authToken) {
-        jwt.verify(authToken, process.env.JWT_KEY, (err, decoded) => {
-          if (err) {
-            console.log(err.name);
-            if (err.name === "TokenExpiredError") {
-              res.status(440).json({errors: "Session Expired."});
-            } else {
-              res.status(401).json({ errors: "Failed to authenticate. " });
-            }
-          } else {
-            req.userId = decoded.userId;
-            req.admin1 = decoded.admin1;
-            req.admin2 = decoded.admin2;
-            req.admin3 = decoded.admin3;
-            req.superAdmin = decoded.superAdmin;
-            if (decoded.superAdmin || (decoded.admin1 || decoded.admin2 || decoded.admin3)) {
-              next();
-            } else {
-              res.status(403).json({ errors: "Not a Superadmin or Admin." });
-            }
-          }
-        });
-      } else {
-        res.status(403).json({ errors: "No token provided." });
-      }
-    }
-  },
-
-  deleteUser: async (req, res) => {
-    const userName = req.body.userName || "";
-
-    if (userName === "") {
-      res.json({
-        message: "Invalid Input",
-        errors: { userId: "This field cannot be empty" },
-      });
-    } else {
-      if ((req.admin1 || req.admin3 || req.admin3) || req.superAdmin) {
-        if (userName === 'admin1' || userName === 'admin2' || userName === 'admin3' || userName === 'superadmin') {
-          res.json({errors: "Cannot delete an admin or superadmin"});
-        } else {
-          UserModel.findOneAndDelete({ userName }, (err, data) => {
-            if (err) {
-              console.log("Err", err);
-            } else {
-              if (data === null) {
-                res.json({ errors: "User not found" });
-              } else {
-                BookingsModel.deleteMany({userId: data._id.toString()}).then(result => {
-                  if (result) {
-                    res.json({
-                      message: `User ${data.userName} and his bookings deleted successfully.`,
-                    });
-                  } else {
-                    res.json({
-                      message: `User ${data.userName} deleted successfully.`,
-                    });
-                  }
-                }).catch(err => {
-                  console.log(err);
-                  res.json({errors: "Something went wrong"});
-                });
-              }
-            }
-          });
+            errors: { userName: "", password: "Invalid Password." },
+          });      
         }
       } else {
-        res.status(403).json({ errors: "Unauthorized Access" });
-      }
-    }
-  },
-
-  isOwnerOf: async (req, res, next) => {
-    const bookId = req.body.bookId || "";
-
-    BookingsModel.findOne({_id: ObjectId(bookId)}).then((result) => {
-      if (result === null) {
-        res.json({errors: "Booking doesn't exists"});
-      } else {
-        if (req.userId === result.userId.toString()) {
-          next();
-        } else {
-          res.json({
-            errors: "You don't have rights to update the booking",
-          });
-        }
+        res.json({
+          errors: { userName: "Username does not exist.", password: "" },
+        });
       }
     });
   }
-};
+}
+export async function isAuthenticated(req, res, next) {
+  if (!req.headers["authorization"]) {
+    res.status(403).json({ errors: "User not authenticated." });
+  } else {
+    const authHeader = req.headers["authorization"];
+    const authToken = authHeader.split(" ")[1];
+
+    if (authToken) {
+      verify(authToken, process.env.JWT_KEY, (err, decoded) => {
+        if (err) {
+          if (err.name === TokenExpiredError.name) {
+            res.status(440).json({ errors: "Session Expired" });
+          } else {
+            res.status(401).json({ errors: "Failed to authenticate." });
+          }
+        } else {
+          req.userId = decoded.userId;
+          next();
+        }
+      });
+    } else {
+      res.status(403).json({ errors: "User not authenticated." });
+    }
+  }
+}
+export async function isAdmin(req, res, next) {
+  if (!req.headers["authorization"]) {
+    res.status(403).json({ errors: "No token provided." });
+  } else {
+    const authHeader = req.headers["authorization"];
+    const authToken = authHeader.split(" ")[1];
+
+    if (authToken) {
+      verify(authToken, process.env.JWT_KEY, (err, decoded) => {
+        if (err) {
+          if (err.name === "TokenExpiredError") {
+            res.status(440).json({ errors: "Session Expired." });
+          } else {
+            res.status(401).json({ errors: "Failed to authenticate. " });
+          }
+        } else {
+          req.userId = decoded.userId;
+          req.admin1 = decoded.admin1;
+          req.admin2 = decoded.admin2;
+          req.admin3 = decoded.admin3;
+          req.superAdmin = false;
+          if (decoded.admin1 || decoded.admin2 || decoded.admin3) {
+            next();
+          } else {
+            res.status(403).json({ errors: "Not an Admin" });
+          }
+        }
+      });
+    } else {
+      res.status(403).json({ errors: "No token provided." });
+    }
+  }
+}
+export async function isSuperAdmin(req, res, next) {
+  if (!req.headers["authorization"]) {
+    res.status(403).json({ errors: "No token provided." });
+  } else {
+    const authHeader = req.headers["authorization"];
+    const authToken = authHeader.split(" ")[1];
+
+    if (authToken) {
+      verify(authToken, process.env.JWT_KEY, (err, decoded) => {
+        if (err) {
+          if (err.name === "TokenExpiredError") {
+            res.status(440).json({ errors: "Session Expired." });
+          } else {
+            res.status(401).json({ errors: "Failed to authenticate. " });
+          }
+        } else {
+          req.userId = decoded.userId;
+          req.admin1 = false;
+          req.admin2 = false;
+          req.admin3 = false;
+          req.superAdmin = decoded.superAdmin;
+          if (decoded.superAdmin) {
+            next();
+          } else {
+            res.status(403).json({ errors: "Not a Superadmin." });
+          }
+        }
+      });
+    } else {
+      res.status(403).json({ errors: "No token provided." });
+    }
+  }
+}
+export async function isSuper(req, res, next) {
+  if (!req.headers["authorization"]) {
+    res.status(403).json({ errors: "No token provided." });
+  } else {
+    const authHeader = req.headers["authorization"];
+    const authToken = authHeader.split(" ")[1];
+
+    if (authToken) {
+      verify(authToken, process.env.JWT_KEY, (err, decoded) => {
+        if (err) {
+          console.log(err.name);
+          if (err.name === "TokenExpiredError") {
+            res.status(440).json({ errors: "Session Expired." });
+          } else {
+            res.status(401).json({ errors: "Failed to authenticate. " });
+          }
+        } else {
+          req.userId = decoded.userId;
+          req.admin1 = decoded.admin1;
+          req.admin2 = decoded.admin2;
+          req.admin3 = decoded.admin3;
+          req.superAdmin = decoded.superAdmin;
+          if (decoded.superAdmin || (decoded.admin1 || decoded.admin2 || decoded.admin3)) {
+            next();
+          } else {
+            res.status(403).json({ errors: "Not a Superadmin or Admin." });
+          }
+        }
+      });
+    } else {
+      res.status(403).json({ errors: "No token provided." });
+    }
+  }
+}
+export async function deleteUser(req, res) {
+  const userName = req.body.userName || "";
+
+  if (userName === "") {
+    res.json({
+      message: "Invalid Input",
+      errors: { userId: "This field cannot be empty" },
+    });
+    console.log("1")
+  } else {
+    if ((req.admin1 || req.admin3 || req.admin3) || req.superAdmin) {
+      if (userName === 'admin1' || userName === 'admin2' || userName === 'admin3' || userName === 'superadmin') {
+        res.json({ errors: "Cannot delete an admin or superadmin" });
+        console.log("2")
+      } else {
+        UserModel.findOneAndDelete({ userName }, (err, data) => {
+          if (err) {
+            console.log("Err", err);
+          } else {
+            if (data === null) {
+              res.json({ errors: "User not found" });
+              console.log("3")
+            } else {
+              BookingModel.deleteMany({ userId: data._id.toString() }).then(result => {
+                if (result) {
+                  res.json({
+                    message: `User ${data.userName} and his bookings deleted successfully.`,
+                  });
+                } else {
+                  res.json({
+                    message: `User ${data.userName} deleted successfully.`,
+                    
+                  });
+                  console.log("4")
+                }
+              }).catch(err => {
+                console.log(err);
+                res.json({ errors: "Something went wrong" });
+              });
+            }
+          }
+        });
+      }
+    } else {
+      res.status(403).json({ errors: "Unauthorized Access" });
+    }
+  }
+}
+export async function isOwnerOf(req, res, next) {
+  const bookId = req.body.bookId || "";
+
+  BookingModel.findOne({ _id: ObjectId(bookId) }).then((result) => {
+    if (result === null) {
+      res.json({ errors: "Booking doesn't exists" });
+    } else {
+      if (req.userId === result.userId.toString()) {
+        next();
+      } else {
+        res.json({
+          errors: "You don't have rights to update the booking",
+        });
+      }
+    }
+  });
+}
