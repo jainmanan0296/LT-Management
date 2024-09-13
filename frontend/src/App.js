@@ -35,7 +35,7 @@ function App() {
     {
       path: "/book/:x/:y",
       loader: async () => {
-        const result = await fetch("http://localhost:5001/api/rooms/", {
+        const result = await fetch("https://lt-management-backend.onrender.com/api/rooms/", {
           method: "GET",
         });
         const ans = await result.json();
@@ -75,7 +75,7 @@ function App() {
     {
       path: "/details/:id",
       loader: async ({ params }) => {
-        const result = await fetch("http://localhost:5001/api/rooms/", {
+        const result = await fetch("https://lt-management-backend.onrender.com/api/rooms/", {
           method: "GET",
         });
         const ans = await result.json();
@@ -84,7 +84,7 @@ function App() {
         }
 
         const result1 = await fetch(
-          "http://localhost:5001/api/bookings/details",
+          "https://lt-management-backend.onrender.com/api/bookings/details",
           {
             method: "POST",
             headers: {
