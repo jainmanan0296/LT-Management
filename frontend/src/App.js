@@ -1,21 +1,21 @@
 import React from "react";
 import { Box } from "@mui/material";
-import Login from "./components/users/Login";
-import NavBar from "./components/NavBar";
+import Login from "./components/Login/Login";
+import NavBar from "./components/NavBar/NavBar";
 import Home from "./components/Home/Home";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MakeBooking from "./components/bookings/MakeBooking";
-import Register from "./components/users/Register";
-import DeleteUser from "./components/users/DeleteUser";
-import AddRooms from "./components/rooms/AddRooms";
+import Register from "./components/Users/Register";
+import DeleteUser from "./components/Users/DeleteUser";
+import AddRooms from "./components/AddRooms/AddRooms";
 import Details from "./components/bookings/Details";
-import Error from "./components/Error";
-import Help from "./components/users/Help";
-import Pending from "./components/users/PendingRequestPage";
-import SessionExpired from "./components/SessionExpired";
+import Error from "./components/Error/Error";
+import Help from "./components/Help/Help";
+import Pending from "./components/PendingRequest/PendingRequestPage";
+import SessionExpired from "./components/Error/SessionExpired";
 import { useDispatch } from "react-redux";
 import { logoutAction } from "./store/actions/users";
-import NotAuthorized from "./components/NotAuthorized";
+import NotAuthorized from "./components/Error/NotAuthorized";
 
 
 function App() {

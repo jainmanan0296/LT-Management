@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginAction } from "../../store/actions/users";
 import { useNavigate, useLocation } from "react-router-dom";
 import * as React from "react";
-import img1 from "./images/1.jpg";
-import img2 from "./images/2.jpg";
-import img3 from "./images/3.jpg";
+import img1 from "../../assets/images/1.jpg";
+import img2 from "../../assets/images/2.jpg";
+import img3 from "../../assets/images/3.jpg";
 import TextField from "@mui/material/TextField";
 import { Card, CardContent, Typography } from "@mui/material";
 

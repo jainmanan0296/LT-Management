@@ -13,9 +13,9 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutAction } from "../store/actions/users";
+import { logoutAction } from "../../store/actions/users";
 import HelpIcon from "@mui/icons-material/Help";
-import logo from './logo.png';
+import logo from '../../assets/logo.png';
 
 const NavBar = () => {
   const [anchor, setAnchor] = useState(null);

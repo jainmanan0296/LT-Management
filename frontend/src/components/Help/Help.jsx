@@ -5,7 +5,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import "./Help.css";
-import FAQ from "./images/FAQ21.jpg";
+import FAQ from "../../assets/images/FAQ21.jpg";
 export default function SimpleAccordion() {
   return (
     <>
