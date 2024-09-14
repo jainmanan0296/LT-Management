@@ -1,21 +1,21 @@
 import React from "react";
 import { Box } from "@mui/material";
-import Login from "./components/Login/Login";
+import Login from "./components/Users/Login";
 import NavBar from "./components/NavBar/NavBar";
 import Home from "./components/Home/Home";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import MakeBooking from "./components/bookings/MakeBooking";
-import Register from "./components/Users/Register.jsx";   
+import MakeBooking from "./components/Bookings/MakeBooking";
+import Register from "./components/Users/Register";
 import DeleteUser from "./components/Users/DeleteUser";
-import AddRooms from "./components/AddRooms/AddRooms";
-import Details from "./components/bookings/Details";
+import AddRooms from "./components/Rooms/AddRooms";
+import Details from "./components/Details/Details";
 import Error from "./components/Error/Error";
 import Help from "./components/Help/Help";
-import Pending from "./components/PendingRequest/PendingRequestPage";
-import SessionExpired from "./components/Error/SessionExpired";
+import Pending from "./components/PendingRequest/PendingRequest";
+import SessionExpired from "./components/SessionExpired/SessionExpired";
 import { useDispatch } from "react-redux";
 import { logoutAction } from "./store/actions/users";
-import NotAuthorized from "./components/Error/NotAuthorized";
+import NotAuthorized from "./components/NotAuthorized/NotAuthorized";
 
 
 function App() {
@@ -132,11 +132,8 @@ function App() {
       errorElement: <Error />,
     },
   ]);
-
-
-
+ 
   return (
-    
     <Box
       sx={{
         display: "flex",
@@ -152,3 +149,5 @@ function App() {
 }
 
 export default App;
+
+

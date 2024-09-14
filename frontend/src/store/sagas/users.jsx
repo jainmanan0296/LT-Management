@@ -47,12 +47,11 @@ const processAddUserRequest = async (data, navigate) => {
       } else {
         if (res.status === 440) {
           navigate('/sessionExpired');
-        } else if (res.status === 401) {
+        } else if (res.status === 401){
           navigate('/notAuthorized');
         } else {
           navigate('/error');
         }
-
         return {errors: res.status};
       }
     })

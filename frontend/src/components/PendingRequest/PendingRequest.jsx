@@ -1,7 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import "./PendingRequestPage.css";
-import Pend from "../PendingRequest/Pend";
+import "./PendingRequest.css";
+import Pend from "./Pending";
 import { useLocation, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import LinearProgress from "@mui/material/LinearProgress";

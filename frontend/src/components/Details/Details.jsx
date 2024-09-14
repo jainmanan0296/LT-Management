@@ -2,10 +2,9 @@ import "./Details.css";
 import { Box } from "@mui/system";
 import {
   FormControlLabel,
-  Grid,
   Checkbox,
-  TextareaAutosize,
   TextField,
+  Stack,
   Tab,
   Tabs,
   Card,
@@ -20,6 +19,7 @@ import {
   Typography,
   FormHelperText,
 } from "@mui/material";
+import {TextareaAutosize} from '@mui/base';
 import React, { useState, useEffect } from "react";
 import DoneOutlineSharpIcon from "@mui/icons-material/DoneOutlineSharp";
 import ClearSharpIcon from "@mui/icons-material/ClearSharp";
@@ -421,8 +421,8 @@ const Details = () => {
         }}
       >
         <form className="formContainer">
-          <Grid container direction="column" spacing="20" alignItems="center">
-            <Grid item className="gridItem">
+          <Stack container direction="column" spacing="20" alignItems="center">
+            <Stack item className="gridItem">
               <TextField
                 className="new1"
                 InputLabelProps={{
@@ -434,9 +434,9 @@ const Details = () => {
                 placeholder=""
                 disabled
               />
-            </Grid>
+            </Stack>
 
-            <Grid item className="gridItem">
+            <Stack item className="gridItem">
               <FormControl
                 sx={{
                   fontSize: 15,
@@ -461,8 +461,8 @@ const Details = () => {
                 </Select>
                 <FormHelperText>{errors1.ltId}</FormHelperText>
               </FormControl>
-            </Grid>
-            <Grid item className="gridItem">
+            </Stack>
+            <Stack item className="gridItem">
               <TextField
                 className="new1"
                 InputLabelProps={{
@@ -477,8 +477,8 @@ const Details = () => {
                 placeholder=""
                 disabled
               />
-            </Grid>
-            <Grid item className="gridItem">
+            </Stack>
+            <Stack item className="gridItem">
               <TextField
                 className="new1"
                 InputLabelProps={{
@@ -489,8 +489,8 @@ const Details = () => {
                 value={batch}
                 disabled
               />
-            </Grid>
-            <Grid item className="gridItem">
+            </Stack>
+            <Stack item className="gridItem">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
                   className="new1"
@@ -502,8 +502,8 @@ const Details = () => {
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
-            </Grid>
-            <Grid item className="gridItem">
+            </Stack>
+            <Stack item className="gridItem">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
                   className="new1"
@@ -515,8 +515,8 @@ const Details = () => {
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
-            </Grid>
-            <Grid item sx={{ marginBottom: "10px" }}>
+            </Stack>
+            <Stack item sx={{ marginBottom: "10px" }}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -527,8 +527,8 @@ const Details = () => {
                 }
                 label="IT Requirements"
               />
-            </Grid>
-          </Grid>
+            </Stack>
+          </Stack>
         </form>
         <Box className="sideBox">
           <TabContext value={v}>
@@ -547,7 +547,7 @@ const Details = () => {
               <Tab label="Sun" value="7" />
             </Tabs>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Grid
+              <Stack
                 container
                 alignItems="center"
                 spacing="20"
@@ -558,7 +558,7 @@ const Details = () => {
                   flex: 1,
                 }}
               >
-                <Grid item sx={{ width: "200px" }}>
+                <Stack item sx={{ width: "200px" }}>
                   <TimePicker
                     className="new1"
                     disabled
@@ -567,8 +567,8 @@ const Details = () => {
                     onChange={() => {}}
                     renderInput={(params) => <TextField {...params} />}
                   />
-                </Grid>
-                <Grid item sx={{ width: "200px" }}>
+                </Stack>
+                <Stack item sx={{ width: "200px" }}>
                   <TimePicker
                     className="new1"
                     disabled
@@ -577,8 +577,8 @@ const Details = () => {
                     onChange={() => {}}
                     renderInput={(params) => <TextField {...params} />}
                   />
-                </Grid>
-              </Grid>
+                </Stack>
+              </Stack>
             </LocalizationProvider>
           </TabContext>
           {approveReject && !approved && !past && (

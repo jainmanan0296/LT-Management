@@ -1,32 +1,25 @@
-import { all } from "redux-saga/effects";
-import UserReducer from "./reducers/users";
+import { configureStore } from '@reduxjs/toolkit';
+import createSagaMiddleware from 'redux-saga';
+import { all } from 'redux-saga/effects';
+import userReducer from './reducers/users';
+import bookingReducer from './reducers/booking';
+import roomReducer from './reducers/rooms';
 import {
   addUserWatcher,
   deleteUserWatcher,
   loginWatcher,
   logoutWatcher,
-} from "./sagas/users";
-import { combineReducers, createStore, applyMiddleware } from "redux";
-import createSagaMiddleware from "redux-saga";
-import { composeWithDevTools } from "redux-devtools-extension";
-import thunk from "redux-thunk";
+} from './sagas/users';
 import {
   approveBookingWatcher,
   bookingWatcher,
   deleteBookingWatcher,
   rejectBookingWatcher,
   updateBookingWatcher,
-} from "./sagas/booking";
-import BookingReducer from "./reducers/booking";
-import RoomReducer from "./reducers/rooms";
-import { addRoomWatcher } from "./sagas/rooms";
+} from './sagas/booking';
+import { addRoomWatcher } from './sagas/rooms';
 
-const rootReducer = combineReducers({
-  users: UserReducer,
-  booking: BookingReducer,
-  rooms: RoomReducer,
-});
-
+// Combine all sagas into a root saga
 function* rootSagas() {
   yield all([
     loginWatcher(),
@@ -42,11 +35,24 @@ function* rootSagas() {
   ]);
 }
 
-const sagaMiddleWare = createSagaMiddleware();
+// Create the saga middleware
+const sagaMiddleware = createSagaMiddleware();
 
-const storeMiddleware = composeWithDevTools(
-  applyMiddleware(sagaMiddleWare, thunk)
-);
+// Configure store using Redux Toolkit
+const store = configureStore({
+  reducer: {
+    users: userReducer,
+    booking: bookingReducer,
+    rooms: roomReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false, // Disable serialization checks if necessary
+    }).concat(sagaMiddleware),
+  devTools: process.env.NODE_ENV !== 'production', // Redux DevTools enabled in non-production
+});
 
-export default createStore(rootReducer, storeMiddleware);
-sagaMiddleWare.run(rootSagas);
+// Run saga middleware
+sagaMiddleware.run(rootSagas);
+
+export default store;

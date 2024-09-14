@@ -4,15 +4,15 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { Box } from "@mui/material";
-import "./TableDaily.css";
-import Table1 from "./TableDaily";
+import "../Tables/TableDaily.css";
+import Table1 from "../Tables/TableDaily";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import LinearProgress from "@mui/material/LinearProgress";
 
 //change1
 import { ThemeProvider } from '@mui/material/styles';
-import theme from './muitheme';
+import theme from './Multitheme';
 
 
 function makeArray(w, h, val) {

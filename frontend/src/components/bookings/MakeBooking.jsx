@@ -5,7 +5,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Card, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import TextareaAutosize from "@mui/base/TextareaAutosize";
+import {TextareaAutosize} from "@mui/base";
 import dayjs from "dayjs";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
