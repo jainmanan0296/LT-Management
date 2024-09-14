@@ -2,14 +2,14 @@ import React from "react";
 import { useEffect } from "react";
 
 import { Box } from "@mui/material";
-import Login from "./components/Users/Login";
+import Login from "./components/users/Login";
 import NavBar from "./components/NavBar/NavBar";
 import Home from "./components/Home/Home";
 //import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import MakeBooking from "./components/bookings/MakeBooking";
-import Register from "./components/Users/Register.jsx";   
-import DeleteUser from "./components/Users/DeleteUser";
+import Register from "./components/users/Register.jsx";   
+import DeleteUser from "./components/users/DeleteUser";
 import AddRooms from "./components/Rooms/AddRooms";
 import Details from "./components/Details/Details";
 import Error from "./components/Error/Error";
