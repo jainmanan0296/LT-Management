@@ -2,14 +2,14 @@ import React from "react";
 //import { useEffect } from "react";
 
 import { Box } from "@mui/material";
-import Login from "./components/Users/Login";
+import Login from "./components/users/Login";
 import NavBar from "./components/NavBar/NavBar";
 import Home from "./components/Home/Home";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 //import { Routes, Route, useNavigate } from "react-router-dom";
 import MakeBooking from "./components/bookings/MakeBooking";
-import Register from "./components/Users/Register.jsx";   
-import DeleteUser from "./components/Users/DeleteUser";
+import Register from "./components/users/Register.jsx";   
+import DeleteUser from "./components/users/DeleteUser";
 import AddRooms from "./components/Rooms/AddRooms";
 import Details from "./components/Details/Details";
 import Error from "./components/Error/Error";
@@ -152,92 +152,3 @@ function App() {
 }
 
 export default App;
-
-
-// function App() {
-//   const dispatcher = useDispatch();
-//   const navigate = useNavigate();
-
-//   const fetchRooms = async () => {
-//     const result = await fetch("https://lt-management-backend.onrender.com/api/rooms/", {
-//       method: "GET",
-//     });
-//     const ans = await result.json();
-//     return ans.errors ? ans.errors : ans.data;
-//   };
-
-//   const fetchBookingDetails = async (id) => {
-//     const roomsData = await fetchRooms();
-//     const result1 = await fetch(
-//       "https://lt-management-backend.onrender.com/api/bookings/details",
-//       {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${localStorage.getItem("JWT_TOKEN")}`,
-//         },
-//         body: JSON.stringify({ bookId: id }),
-//       }
-//     )
-//       .then((res) => (res.ok ? res.json() : { errors: res.status }))
-//       .catch((err) => ({ errors: err }));
-
-//     if (result1.errors) {
-//       return result1;
-//     } else {
-//       return { ltData: roomsData, data: result1.data };
-//     }
-//   };
-
-//   useEffect(() => {
-//     const handleSessionExpired = () => {
-//       dispatcher(logoutAction());
-//       navigate("/sessionExpired");
-//     };
-//   }, [dispatcher, navigate]);
-
-//   return (
-//     <Box
-//       sx={{
-//         display: "flex",
-//         flexDirection: "column",
-//         height: "100%",
-//         width: "100%",
-//       }}
-//     >
-//       <NavBar />
-//       <Routes>
-//         <Route path="/" element={<Home />} />
-//         <Route path="/login" element={<Login />} />
-//         <Route path="/register" element={<Register />} />
-//         <Route path="/deleteUser" element={<DeleteUser />} />
-//         <Route path="/addRooms" element={<AddRooms />} />
-//         <Route path="/pending" element={<Pending />} />
-//         <Route path="/help" element={<Help />} />
-//         <Route
-//           path="/book/:x/:y"
-//           element={<MakeBooking />}
-//           loader={fetchRooms}
-//           errorElement={<Error />}
-//         />
-//         <Route
-//           path="/details/:id"
-//           element={<Details />}
-//           loader={({ params }) => fetchBookingDetails(params.id)}
-//           errorElement={<Error />}
-//         />
-//         <Route path="/error" element={<Error />} />
-//         <Route
-//           path="/sessionExpired"
-//           element={<SessionExpired />}
-//           loader={() => {
-//             dispatcher(logoutAction());
-//           }}
-//         />
-//         <Route path="/notAuthorized" element={<NotAuthorized />} />
-//       </Routes>
-//     </Box>
-//   );
-// }
-
-// export default App;
