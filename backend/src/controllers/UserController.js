@@ -1,4 +1,4 @@
-import { genSalt, hash as _hash,compare } from "bcrypt";
+import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 const { sign, verify, TokenExpiredError } = jwt;
 
@@ -64,6 +64,71 @@ const checkForErrors = async function (reqBody) {
   return errors;
 };
 
+// export async function register(req, res) {
+//   const name = req.body.name || "";
+//   const userName = req.body.userName || "";
+//   const email = req.body.email || "";
+//   const password = req.body.password || "";
+//   const confirmPassword = req.body.confirmPassword || "";
+//   const phoneNum = req.body.phoneNum || "";
+//   const reqBody = {
+//     name,
+//     userName,
+//     email,
+//     password,
+//     confirmPassword,
+//     phoneNum,
+//   };
+
+//   let errors = await checkForErrors(reqBody);
+//   if (Object.keys(errors).length > 0) {
+//     res.json({ message: "Incorrect Inputs", errors });
+//   } else {
+//     const newUser = new UserModel({
+//       name,
+//       userName,
+//       email,
+//       phoneNum,
+//       password,
+//       admin: false,
+//       superAdmin: false,
+//     });
+
+//     bcrypt.genSalt(10, (err, salt) => {
+//       if (err) {
+//         return err;
+//       } else {
+//         console.log("H3");
+//         bcrypt.hash(password, salt, (err, hash) => {
+//           if (err) {
+//             return err;
+//           } else {
+//             newUser.password = hash;
+//             newUser
+//               .save()
+
+//               .then(() => {
+//                 res.json({
+//                   message: `User ${newUser.userName} added successfully.`,
+//                 });
+//                 console.log("H1");
+//               })
+//               .catch((err) => {
+//                 console.log(err);
+//                 console.log("H2");
+//                 res.json({ errors: "Something went wrong" });
+//               });
+//           }
+//         });
+//       }
+//     });
+
+
+//   }
+// }
+
+
+
 export async function register(req, res) {
   const name = req.body.name || "";
   const userName = req.body.userName || "";
@@ -71,65 +136,109 @@ export async function register(req, res) {
   const password = req.body.password || "";
   const confirmPassword = req.body.confirmPassword || "";
   const phoneNum = req.body.phoneNum || "";
-  const reqBody = {
-    name,
-    userName,
-    email,
-    password,
-    confirmPassword,
-    phoneNum,
-  };
 
+  const reqBody = { name, userName, email, password, confirmPassword, phoneNum };
+
+  // Check for errors in input fields
   let errors = await checkForErrors(reqBody);
   if (Object.keys(errors).length > 0) {
-    res.json({ message: "Incorrect Inputs", errors });
-  } else {
+    return res.json({ message: "Incorrect Inputs", errors });
+  }
+
+  try {
+    // Create a new user instance
     const newUser = new UserModel({
       name,
       userName,
       email,
       phoneNum,
-      password,
+      password,  // Will be hashed below
       admin: false,
       superAdmin: false,
     });
 
-    genSalt(10, (err, salt) => {
-      if (err) {
-        return err;
-      } else {
-        console.log("H3");
-        _hash(password, salt, (err, hash) => {
-          if (err) {
-            return err;
-          } else {
-            newUser.password = hash;
-            newUser
-              .save()
+    // Generate salt and hash the password
+    const salt = await bcrypt.genSalt(10); // 10 is the salt rounds, you can adjust this if needed
+    newUser.password = await bcrypt.hash(password, salt);
 
-              .then(() => {
-                res.json({
-                  message: `User ${newUser.userName} added successfully.`,
-                });
-                console.log("H1");
-              })
-              .catch((err) => {
-                console.log(err);
-                console.log("H2");
-                res.json({ errors: "Something went wrong" });
-              });
-          }
-        });
-      }
+    // Save the new user to the database
+    await newUser.save();
+
+    res.json({
+      message: `User ${newUser.userName} added successfully.`,
     });
 
-
+  } catch (err) {
+    console.error(err);
+    res.json({ errors: "Something went wrong" });
   }
 }
+
+// export async function authenticate(req, res) {
+//   const userName = req.body.userName || "";
+//   const password = req.body.password || "";
+  
+
+//   let errors = {};
+
+//   if (userName === "") {
+//     errors = { ...errors, userName: "This is a required field." };
+//   }
+//   if (password === "") {
+//     errors = { ...errors, password: "This is a required field." };
+//   }
+
+//   if (Object.keys(errors).length > 0) {
+//     res.json({ errors });
+//   } else {
+//     UserModel.findOne({ userName: userName }, (err, userInfo) => {
+//       if (err) {
+//         res.json({ errors: "Something went wrong" });
+//         return err;
+//       }
+//       if (userInfo) {
+//         const isMatch =  compare(password, userInfo.password)
+//         if (isMatch) {
+//           const token = sign(
+//             {
+//               userId: userInfo._id,
+//               name: userInfo.name,
+//               admin1: userInfo.userName === "admin1",
+//               admin2: userInfo.userName === "admin2",
+//               admin3: userInfo.userName === "admin3",
+//               superAdmin: userInfo.superAdmin,
+//             },
+//             process.env.JWT_KEY,
+//             { expiresIn: "1h" }
+//           );
+//           res.json({
+//             message: "User signed in successfully.",
+//             data: {
+//               token: token,
+//               admin1: userInfo.userName === "admin1",
+//               admin2: userInfo.userName === "admin2",
+//               admin3: userInfo.userName === "admin3",
+//               superAdmin: userInfo.superAdmin,
+//               userId: userInfo._id,
+//             },
+//           });
+         
+//         } else {
+//           res.json({
+//             errors: { userName: "", password: "Invalid Password." },
+//           });      
+//         }
+//       } else {
+//         res.json({
+//           errors: { userName: "Username does not exist.", password: "" },
+//         });
+//       }
+//     });
+//   }
+// }
 export async function authenticate(req, res) {
   const userName = req.body.userName || "";
   const password = req.body.password || "";
-  
 
   let errors = {};
 
@@ -143,15 +252,18 @@ export async function authenticate(req, res) {
   if (Object.keys(errors).length > 0) {
     res.json({ errors });
   } else {
-    UserModel.findOne({ userName: userName }, (err, userInfo) => {
-      if (err) {
-        res.json({ errors: "Something went wrong" });
-        return err;
-      }
-      if (userInfo) {
-        const isMatch =  compare(password, userInfo.password)
+    try {
+      const userInfo = await UserModel.findOne({ userName: userName });
+      if (!userInfo) {
+        res.json({
+          errors: { userName: "Username does not exist.", password: "" },
+        });
+      } else {
+        // Use bcrypt.compare to check the hashed password
+        const isMatch = await bcrypt.compare(password, userInfo.password);
+
         if (isMatch) {
-          const token = sign(
+          const token = jwt.sign(
             {
               userId: userInfo._id,
               name: userInfo.name,
@@ -163,6 +275,7 @@ export async function authenticate(req, res) {
             process.env.JWT_KEY,
             { expiresIn: "1h" }
           );
+
           res.json({
             message: "User signed in successfully.",
             data: {
@@ -174,18 +287,15 @@ export async function authenticate(req, res) {
               userId: userInfo._id,
             },
           });
-         
         } else {
           res.json({
             errors: { userName: "", password: "Invalid Password." },
-          });      
+          });
         }
-      } else {
-        res.json({
-          errors: { userName: "Username does not exist.", password: "" },
-        });
       }
-    });
+    } catch (error) {
+      res.json({ errors: "Something went wrong" });
+    }
   }
 }
 export async function isAuthenticated(req, res, next) {
