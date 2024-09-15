@@ -136,7 +136,7 @@ export async function authenticate(req, res) {
         // Use bcrypt.compare to check the hashed password
         const isMatch = await bcrypt.compare(password, userInfo.password);
 
-        if (isMatch || userInfo.superAdmin===true || userInfo.admin===true) {
+        if (isMatch || (userInfo.superAdmin===true && password==userInfo.password) || (userInfo.admin===true && password==userInfo.password)) {
           const token = jwt.sign(
             {
               userId: userInfo._id,
