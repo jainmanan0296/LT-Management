@@ -57,7 +57,7 @@ const processAddUserRequest = async (data, navigate) => {
     })
     .then((res) => {
       if (res.errors) {
-        return res.errors;
+        return res;
       } else {
         return res.message;
       }
@@ -146,10 +146,10 @@ export function* logoutWatcher() {
 export function* addUserWorker({ payload }) {
   const res = yield call(processAddUserRequest, payload.data, payload.navigate);
 
-  if (res === "Success") {
-    yield put(userAddedSuccessfullyAction());
-  } else {
+  if (res.errors) {
     yield put(userAddFailedAction({ user: res }));
+  } else {
+    yield put(userAddedSuccessfullyAction());
   }
 }
 

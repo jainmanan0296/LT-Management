@@ -105,7 +105,7 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
-
+  const [success, setSuccess] = React.useState("");
   const e = useSelector((state) => state.users.addErrors);
   const added = useSelector((state) => state.users.added);
 
@@ -115,7 +115,9 @@ const Register = () => {
 
   useEffect(() => {
     if (added) {
-      //navigate("/");
+      setSuccess("User Added Successfully!");
+    } else {
+      setSuccess("");
     }
   }, [added]);
 
@@ -234,6 +236,7 @@ const Register = () => {
               height: "95%",
             }}
           >
+               
             <div
               style={{
                 display: "flex",
@@ -242,12 +245,11 @@ const Register = () => {
                 textAlign: "center",
               }}
             >
-              
-              {added && (
-                <Typography variant="body1" color={"green"} sx={{mb: '20px'}}>
-                  User Added Successfully!
-                </Typography>
-              )}
+               {success && (
+              <Typography variant="body1" color="green" sx={{ mb: "20px" }}>
+                {success}
+              </Typography>
+            )}
               <Box
                 style={{
                   marginTop: "20px",

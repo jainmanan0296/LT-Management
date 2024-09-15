@@ -1,4 +1,5 @@
 import {
+  ADD_USER,
   DELETE_USER_FAILED,
   DELETE_USER_SUCCESSFUL,
   LOGIN_SUCCESSFUL,
@@ -33,6 +34,11 @@ const initialState = {
 const UserReducer = (state = initialState, action) => {
   
   switch (action.type) {
+    case ADD_USER:
+      return {
+        ...state,
+        addErrors: false,
+      };
     case LOGIN_SUCCESSFUL:
       return {
         ...state,
