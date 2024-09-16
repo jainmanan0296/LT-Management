@@ -121,8 +121,10 @@ const AddRooms = () => {
         }}
       >
         <form>
-          <Grid2 container direction="column" spacing={2}>
-            <Grid2 item>
+          <Box display="flex" flexDirection="column" gap={2}>
+            {" "}
+            {/* Use Box for layout with gap */}
+            <Box>
               <TextField
                 label="Room Number"
                 value={state}
@@ -130,9 +132,10 @@ const AddRooms = () => {
                 error={err && Boolean(error.roomNo)}
                 helperText={error.roomNo}
                 required
+                fullWidth
               />
-            </Grid2>
-            <Grid2 item>
+            </Box>
+            <Box>
               <TextField
                 label="Capacity"
                 value={state1}
@@ -140,20 +143,19 @@ const AddRooms = () => {
                 error={err && Boolean(error.capacity)}
                 helperText={error.capacity}
                 required
+                fullWidth
               />
-            </Grid2>
-            <Grid2 item>
-              <Box display="flex" justifyContent="center">
-                <Button
-                  variant="contained"
-                  sx={{ width: "100px", marginTop: "20px" }}
-                  onClick={handleClickOpen}
-                >
-                  Add
-                </Button>
-              </Box>
-            </Grid2>
-          </Grid2>
+            </Box>
+            <Box display="flex" justifyContent="center" marginTop="20px">
+              <Button
+                variant="contained"
+                sx={{ width: "100px" }}
+                onClick={handleClickOpen}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
         </form>
       </Card>
     </Box>
