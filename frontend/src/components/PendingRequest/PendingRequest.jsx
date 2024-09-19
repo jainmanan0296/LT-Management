@@ -1,10 +1,9 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
 import "./PendingRequest.css";
 import Pend from "./Pending";
 import { useLocation, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import LinearProgress from "@mui/material/LinearProgress";
+import { Box, Typography, Link, LinearProgress } from '@mui/material';
 import { useEffect } from "react";
 
 export default function PendingRequestPage() {
@@ -86,17 +85,50 @@ export default function PendingRequestPage() {
     }
   }, [pending]);
 
+
   if (elements === undefined || elements.length === 0) {
     return (
       <Box
-        style={{
+        sx={{
           marginTop: "-9px",
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '90vh', // Center vertically within the view
+          backgroundColor: '#f0f4f8', // Light background color
+          borderRadius: '8px', // Rounded corners
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', // Subtle shadow for depth
+          padding: '20px', // Space inside the box
+          textAlign: 'center', // Center text inside the box
         }}
       >
-        <LinearProgress />
+        <Typography
+          variant="h6"
+          color="textSecondary"
+          sx={{ marginBottom: '16px', fontWeight: 'bold' }} // Additional styling for text
+        >
+          No Pending Requests Found
+        </Typography>
+        <Link
+          component="button"
+          variant="body2"
+          onClick={() => navigate('/')} // Adjust the route to your home route
+          sx={{
+            marginTop: '8px',
+            padding: '10px 20px',
+            backgroundColor: '#1976d2', // Button background color
+            color: '#ffffff', // Button text color
+            borderRadius: '4px', // Rounded button
+            textDecoration: 'none',
+            fontWeight: 'bold',
+            '&:hover': {
+              backgroundColor: '#1565c0', // Darker on hover
+            },
+          }}
+        >
+          Go to Home
+        </Link>
       </Box>
     );
   }
