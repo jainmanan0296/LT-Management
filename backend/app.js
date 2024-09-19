@@ -6,7 +6,7 @@ import bookingRouter from "./src/routes/BookingsRoute.js";
 import 'dotenv/config'
 import cors from "cors";
 import { connectDB } from "./config/db.js"
-//const seedDB = require("./seed");
+//import seedDB from "./seed.js";
 
 app.use(cors());
 
