@@ -90,7 +90,7 @@ function TableDaily({ data, lectures, date }) {
                           ? key % 2 === 1
                             ? "white"
                             : "#efefef"
-                          : (value.admin1 && value.admin2 && value.admin3) ||
+                          : (value.admin1 || value.admin2 || value.admin3) ||
                             value.superAdmin
                           ? "green"
                           : "yellow",
